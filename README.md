@@ -1,0 +1,3 @@
+this project was a final project from my graduate course System on a Chip Studio EEE6994 taken at Lawrence Technological University.  The course focused on learning skills to access features on a System on a Chip, and interface with the hardware peripherals using C/C++.  The bulk of this course was focused on a final project and presentation.  
+
+My project proposal was to create a gesture activated camera. The idea was to be able to trigger various commands for a camera using a gesture sensor.  The final project utilized the gesture sensor, however, it the camera portion did not get implemented.  
