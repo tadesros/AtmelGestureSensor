@@ -1,0 +1,142 @@
+
+#include "board.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <assert.h>
+
+/*----------------------------------------------------------------------------
+ *        Local definitions
+ *----------------------------------------------------------------------------*/
+
+/** TWI clock frequency in Hz. */
+#define TWCK            100000
+
+/** Slave address of twi_eeprom example.*/
+#define Gesture_Address           0x38
+
+
+/** EEPROM Pins definition */
+#define TWI_PINS PINS_TWI0
+
+/** TWI0 peripheral ID for EEPROM device*/
+#define BOARD_ID_TWI   ID_TWIHS0
+
+/** TWI0 base address for EEPROM device */
+#define BASE_ADDRESS TWIHS0
+
+/*----------------------------------------------------------------------------
+ *        Local variables
+ *----------------------------------------------------------------------------*/
+/** PIO pins to configure. */
+static const Pin pins[] = TWI_PINS;
+
+/** TWI driver instance.*/
+static Twid twid;
+
+static TwihsDma twi_dma;
+
+
+
+/*----------------------------------------------------------------------------
+ *        Global functions
+ *----------------------------------------------------------------------------*/
+extern int main( void )
+{
+	uint8_t i;
+	uint8_t SNo[16];
+	Async async;
+	uint32_t result;
+	
+	uint8_t value;
+	
+	
+	//Store Write_Response
+	 uint8_t Write_Response=0x03;
+	uint8_t Read_Data[10];
+
+	/* Disable watchdog */
+	WDT_Disable(WDT);
+
+	/* Enable I and D cache */
+	SCB_EnableICache();
+	SCB_EnableDCache();
+	
+	TimeTick_Configure();
+
+	/* Configure TWI pins. */
+	PIO_Configure(pins, PIO_LISTSIZE(pins));
+	PMC_EnablePeripheral(BOARD_ID_TWI);
+	
+	TWI_ConfigureMaster(BASE_ADDRESS, TWCK, BOARD_MCK);
+	TWID_Initialize(&twid, BASE_ADDRESS);
+	
+	while(1)
+	{	
+		
+
+	 
+		
+		result=TWID_Read(&twid, 0x10, 0x04, 1, Read_Data, 1, 0);
+   //  printf("Read Data = %X \n \r",Read_Data[0]);		
+		
+		 value = Read_Data[0];
+	
+		switch(value){
+  	case 0x01:
+		{
+			printf("Right Swipe\n \r ");
+			break;	
+			
+		}
+		case 0x02:
+		{
+			printf("Left Swipe\n \r ");
+			break;
+		}
+		case 0x03:
+		{
+			printf("Up Swipe\n \r ");
+			break;
+		}
+		case 0x05:
+		{
+			printf("Hover \n \r");
+			break;
+		}	
+		case 0x06:
+		{
+			printf("Hover-Left \n \r");
+			break;
+		}
+		case 0x07:
+		{
+			printf("Hover-Right \n \r");
+			break;
+		}	
+		case 0x08:
+		{
+			printf("Hover-up \n \r ");
+			break;
+		}
+		default:
+		{
+			printf("None \n \r ");
+		}
+		
+		
+ 	    Wait(1000);
+	
+		
+		
+		
+   } 
+	
+	}
+
+}
+
+
+
+
